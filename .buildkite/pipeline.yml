@@ -1,6 +1,9 @@
 # .buildkite/pipeline.yml
 steps:
   - label: ":pipeline: Build kernel"
+    timeout_in_minutes: 30
+    agents:
+      queue: "default"
     command: "build.sh"
     artifact_paths: "scripts/*"
     secrets:
