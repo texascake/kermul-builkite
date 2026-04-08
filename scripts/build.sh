@@ -3,19 +3,32 @@
 
 export TZ="Asia/Jakarta"
 
+# --- ⚙️ Variabel Repositori Kernel ---
+# GANTI URL DI BAWAH dengan link repositori kernel X00TD kamu
+KERNEL_REPO="https://github.com/Tiktodz/android_kernel_asus_sdm636.git"
+TARGET_BRANCH="caf"
+
+echo "--- 🧹 Membersihkan Workspace Lama"
+if [ -d "kernel" ]; then
+    echo "Folder 'kernel' lama ditemukan. Menghapus agar workspace selalu bersih (Fresh Build)..."
+    rm -rf kernel
+fi
+
+echo "--- 📥 Mengunduh (Cloning) Source Code Kernel"
+git clone --depth=1 -b "$TARGET_BRANCH" "$KERNEL_REPO" kernel
+
 echo "--- 🔍 Mengecek Direktori Kerja"
+cd kernel || { echo "Gagal masuk ke folder kernel! Aborting..."; exit 1; }
+
 if [ -f arch/arm64/configs/X00TD_defconfig ]; then
-    echo "Berada di root direktori kernel."
-elif [ -f kernel/arch/arm64/configs/X00TD_defconfig ]; then
-    cd kernel
-    echo "Berpindah ke folder kernel/."
+    echo "Berhasil menemukan konfigurasi X00TD di branch $TARGET_BRANCH. Lanjut ke proses berikutnya..."
 else
-    echo "File X00TD_defconfig tidak ditemukan! Aborting..."
+    echo "File X00TD_defconfig tidak ditemukan di dalam repositori! Aborting..."
     exit 1
 fi
 
 # Additional command (if you're lazy to commit :v)
-sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION="-TOM-HMP-969"/g' arch/arm64/configs/X00TD_defconfig
+sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION="-perf+"/g' arch/arm64/configs/X00TD_defconfig
 
 echo "--- 💉 Mengunduh dan Memasang KernelSU-Next"
 curl -LSs "https://raw.githubusercontent.com/Sorayukii/KernelSU-Next/stable/kernel/setup.sh" | bash -s hookless
@@ -34,7 +47,7 @@ HOST=$(uname -a | awk '{print $2}')
 CI_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 TERM=xterm
 
-# set compiler
+# Set compiler
 COMP=1
 LTO=0
 SIGN=1
@@ -93,7 +106,7 @@ tg_post_build() {
 tg_post_msg "<b>$(date '+%d %b %Y, %H:%M %Z')</b> Masterpiece creation starts! Kernel version <b>$KERVER</b> for <b>$DEVICENAME</b>. Log URL <a href='$BUILDKITE_BUILD_URL'>Click Here</a>."
 
 echo "--- 🧰 Menyiapkan Compiler"
-if [ $COMP = "5" ]; then
+if [ $COMP = "1" ]; then
     sudo apt-get install wget libncurses5 -y
     git clone --depth=1 https://github.com/RyuujiX/SDClang -b 14 sdclang
     git clone --depth=1 https://github.com/Kneba/aarch64-linux-android-4.9 gcc64
