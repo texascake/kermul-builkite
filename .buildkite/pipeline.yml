@@ -1,10 +1,8 @@
 # .buildkite/pipeline.yml
 steps:
-  - label: ":pipeline:"
-    command: "buildkite-agent pipeline upload"
-    timeout_in_minutes: 30
-    agents:
-      queue: "default"
+  - label: ":pipeline: Build kernel"
+    command: "build.sh"
+    artifact_paths: "scripts/*"
     secrets:
       - TG_CHAT_ID
       - TG_TOKEN
