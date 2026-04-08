@@ -4,8 +4,7 @@ steps:
     command: "bash scripts/build.sh"
     timeout_in_minutes: 30
     agents:
-      queue: "kernel-builder-machine"
-    env:
-      TG_TOKEN: ${TG_TOKEN}
-      TG_CHAT_ID: ${TG_CHAT_ID}
-      TG_TOPIC_ID: ${TG_TOPIC_ID}
+      queue: "default"
+    secrets:
+      - TG_CHAT_ID
+      - TG_TOKEN
