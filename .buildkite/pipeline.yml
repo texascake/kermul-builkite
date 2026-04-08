@@ -1,7 +1,7 @@
 # .buildkite/pipeline.yml
 steps:
-  - label: "🚀 Build Kernel (X00TD)"
-    command: "bash scripts/build.sh"
+  - label: ":pipeline:"
+    command: "buildkite-agent pipeline upload"
     timeout_in_minutes: 30
     agents:
       queue: "default"
